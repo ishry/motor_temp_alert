@@ -31,7 +31,7 @@ class MotorTempListener:
     def play_sound(self, file_name):
         if os.path.exists(file_name):
             try:
-                # 既に再生中なら止める（新しい警告を即座に優先）
+                # Stop if already playing (prioritize new alert immediately)
                 if pygame.mixer.music.get_busy():
                     pygame.mixer.music.stop()
                     
@@ -39,9 +39,9 @@ class MotorTempListener:
                 pygame.mixer.music.play()
                 rospy.loginfo(f"♪ Sound playing: {file_name}")
             except pygame.error as e:
-                rospy.logerr(f"再生エラー: {e}")
+                rospy.logerr(f"Playback Error: {e}")
         else:
-            rospy.logwarn(f"ファイルが見つかりません: {file_name}")
+            rospy.logwarn(f"File not found: {file_name}")
 
     def callback(self, msg):
         if not msg.data:
@@ -52,20 +52,21 @@ class MotorTempListener:
         # rospy.loginfo(f"Max Temp: {max_temp} | Alert Level: {self.alert_level}")
         if max_temp >= self.temp_critical:
             if self.alert_level < 2:
-                rospy.logwarn(f"[CRITICAL] モーター温度上昇: {max_temp}℃ -> Sound2再生")
+                rospy.logwarn(f"[CRITICAL] Motor temperature rise: {max_temp} -> Playing Sound2")
                 self.play_sound(self.sound2_file)
                 self.alert_level = 2
 
         elif max_temp >= self.temp_warning:
             if self.alert_level < 1:
-                rospy.logwarn(f"[WARNING] モーター温度上昇: {max_temp}℃ -> Sound1再生")
+                rospy.logwarn(f"[WARNING] Motor temperature rise: {max_temp} -> Playing Sound1")
                 self.play_sound(self.sound1_file)
                 self.alert_level = 1
         
         elif max_temp <= self.temp_reset:
             if self.alert_level > 0:
-                rospy.loginfo(f"[RESET] 温度低下を確認: {max_temp}℃ -> 監視状態リセット")
+                rospy.loginfo(f"[RESET] Temperature drop confirmed: {max_temp} -> Monitoring state reset")
                 self.alert_level = 0
+            rospy.loginfo(f"[INFO] Current max temperature: {max_temp} ")
 
 if __name__ == '__main__':
     try:
