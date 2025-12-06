@@ -8,9 +8,11 @@ from trans_ros_bridge.msg import ExtraMotorState
 class MotorTempListener:
     def __init__(self):
         self.topic_name = "/motor_states_low/motor_outer_temp"
-        
-        self.sound1_file = "sound1.mp3"
-        self.sound2_file = "sound2.mp3"
+
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        sound_dir = os.path.join(script_dir, '../sounds')
+        self.sound1_file = os.path.join(sound_dir, "alert1.mp3")
+        self.sound2_file = os.path.join(sound_dir, "alert2.mp3")
         
         self.temp_critical = 80.0 
         self.temp_warning  = 70.0
@@ -71,3 +73,4 @@ if __name__ == '__main__':
         rospy.spin()
     except rospy.ROSInterruptException:
         pass
+ 
