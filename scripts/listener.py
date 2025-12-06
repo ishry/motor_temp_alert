@@ -65,7 +65,7 @@ class MotorTempListener:
 
         max_temp = max(msg.data)
         
-        # rospy.loginfo(f"Max Temp: {max_temp} | Alert Level: {self.alert_level}")
+        rospy.loginfo(f"[INFO] Max Temp: {max_temp} | Alert Level: {self.alert_level}")
         if max_temp >= self.temp_critical:
             if self.alert_level < 2:
                 rospy.logwarn(f"[CRITICAL] Motor temperature rise: {max_temp} -> Playing Sound2")
@@ -82,7 +82,6 @@ class MotorTempListener:
             if self.alert_level > 0:
                 rospy.loginfo(f"[RESET] Temperature drop confirmed: {max_temp} -> Monitoring state reset")
                 self.alert_level = 0
-            rospy.loginfo(f"[INFO] Current max temperature: {max_temp} ")
 
 if __name__ == '__main__':
     try:
