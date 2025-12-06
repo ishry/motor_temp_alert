@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import rospy
 import os
+import sys
 import pygame
 
 from trans_ros_bridge.msg import ExtraMotorState
@@ -13,7 +14,22 @@ class MotorTempListener:
         sound_dir = os.path.join(script_dir, '../sounds')
         self.sound1_file = os.path.join(sound_dir, "alert1.mp3")
         self.sound2_file = os.path.join(sound_dir, "alert2.mp3")
-        
+
+        # check sound files
+        missing_files = []
+        if not os.path.exists(self.sound1_file):
+            missing_files.append(self.sound1_file)
+        if not os.path.exists(self.sound2_file):
+            missing_files.append(self.sound2_file)
+            
+        if missing_files:
+            error_msg = "\n[ERROR]: One or more sound files are missing. Cannot start motor monitor."
+            rospy.logerr(error_msg)
+            for f in missing_files:
+                rospy.logerr(f"[Missing]  Missing file: {f}")
+            
+            rospy.signal_shutdown("Missing sound files.")
+            sys.exit(1)    
         self.temp_critical = 80.0 
         self.temp_warning  = 70.0
         self.temp_reset    = 65.0
