@@ -63,9 +63,11 @@ class MotorTempListener:
         if not msg.data:
             return
 
-        max_temp = max(msg.data)
+        max_index, max_temp = max(enumerate(msg.data), key=lambda x: x[1])
+        device_id = max_index - 1
         
-        rospy.loginfo(f"[INFO] Max Temp: {max_temp} | Alert Level: {self.alert_level}")
+        rospy.loginfo(f"[INFO] Max Temp: {max_temp} (device_id: {device_id}) | Alert Level: {self.alert_level}")
+          
         if max_temp >= self.temp_critical:
             if self.alert_level < 2:
                 rospy.logwarn(f"[CRITICAL] Motor temperature rise: {max_temp} -> Playing Sound2")
