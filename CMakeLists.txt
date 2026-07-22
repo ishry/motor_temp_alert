@@ -3,11 +3,12 @@ project(motor_temp_alert)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
-  std_msgs
+  trans_ros_bridge
 )
 
 catkin_package()
 
-include_directories(
-  ${catkin_INCLUDE_DIRS}
+catkin_install_python(PROGRAMS
+  scripts/motor_temp_alert.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
